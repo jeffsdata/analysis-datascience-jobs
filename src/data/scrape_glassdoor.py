@@ -15,6 +15,14 @@ import glob
 class GlassdoorJobScraper:
     @retry(wait_fixed=2000, stop_max_attempt_number=10)
     def __clickAndCatch(self, elem, driver, byitem, selector):
+        """ Selenium - Click an element and try again if the element is stale.
+
+        Args:
+            elem (Selenium WebElement): The element you want to click
+            driver (Selenium WebDriver): The current driver
+            byitem (Selenium "By" String): The type you're searching by (By.XPATH, By.CSS_SELECTOR, etc...)
+            selector (string): The selector to search for.
+        """
         try:
             elem.click()
         except:
@@ -22,13 +30,32 @@ class GlassdoorJobScraper:
             elem.click()
 
     def __getJobAttributeAndCatch(self, elem, attributeval):
+        """ Get an attribute from a WebElement. If the attribute doesn't exist, Selenium will throw an exception - this returns None in that case.
+
+        Args:
+            elem (Selenium WebElement): The element to get the attribute from. 
+            attributeval (string): The attribute name
+
+        Returns:
+            string: The attribute value or None (if the attribute doesn't exist)
+        """
         try:
-            elem.get_attribute(attributeval)
+            return elem.get_attribute(attributeval)
         except:
-            pass
+            return None
 
     @retry(wait_fixed=2000, stop_max_attempt_number=10)
     def __waitAndClick(self, driver, byitem, selector):
+        """ Wait for the element to show up and click it. If it doesn't show up, return None. If it does, click it.
+
+        Args:
+            driver (Selenium WebDriver): The current driver
+            byitem (Selenium "By" String): The type you're searching by (By.XPATH, By.CSS_SELECTOR, etc...)
+            selector (string): The selector to search for.
+
+        Returns:
+            Selenium WebElement: The element being search for (or None, if it doesn't exist)
+        """
         elem = self.__waitForElement(driver, byitem, selector)
         if(elem is not None):
             self.__clickAndCatch(elem, driver, byitem, selector)
@@ -36,6 +63,16 @@ class GlassdoorJobScraper:
         return None
 
     def __getTextAndCatch(self, driver, byitem, selector):
+        """ Get the inner text from an element. If the element doesn't exist, return None. If the element is stale, try to find it and get text again. 
+
+        Args:
+            driver (Selenium WebDriver): The current driver
+            byitem (Selenium "By" String): The type you're searching by (By.XPATH, By.CSS_SELECTOR, etc...)
+            selector (string): The selector to search for.
+
+        Returns:
+            string: The element's inner text
+        """
         # Selenium will throw an exception if element doesn't exist
         try:
             elem = driver.find_element(byitem, selector)
@@ -61,6 +98,16 @@ class GlassdoorJobScraper:
 
     @retry(wait_fixed=2000, stop_max_attempt_number=10)
     def __waitForElement(self, driver, byitem, selector):
+        """ Wait for an element to show up - if it never shows up, Selenium will throw an exception, so this catches that and returns None.
+
+        Args:
+            driver (Selenium WebDriver): The current driver
+            byitem (Selenium "By" String): The type you're searching by (By.XPATH, By.CSS_SELECTOR, etc...)
+            selector (string): The selector to search for.
+
+        Returns:
+            Selenium WebElement: The element you're waiting for (or None if it doesn't show up)
+        """
         logger = logging.getLogger(__name__)
         try:
             return WebDriverWait(driver, 2).until(
@@ -72,6 +119,17 @@ class GlassdoorJobScraper:
            pass
     
     def __getJobDataFromJob(self, jidx, job, row, driver):
+        """ For a given job, get all the relevant data.
+
+        Args:
+            jidx (int): The current row number for the search results page. 
+            job (Selenium WebElement): The current job.
+            row (Pandas DataFrame Row): The row for job search metdata.
+            driver (Selenium WebDriver): The current driver
+
+        Returns:
+            [type]: [description]
+        """
         try:
             logger = logging.getLogger(__name__)
             newrow = {}
@@ -122,6 +180,13 @@ class GlassdoorJobScraper:
             logger.error("Error is:", e)
 
     def scrapeAndSaveAllJobDataFromURL(self, row):
+        """ From the row's URL, get job posting data for all result pages.
+            - Opens the page from row (row["url"])
+            - Gathers job posting data for each page in the results.
+            - Skips 
+        Args:
+            row (Pandas DataFrame Row): The row for job search metdata.
+        """
         logger = logging.getLogger(__name__)
         print(os.getcwd())
         files = os.listdir("data/raw")
@@ -157,8 +222,10 @@ class GlassdoorJobScraper:
 
 
 def main():
-    """ Runs data processing scripts to turn raw data from (../raw) into
-        cleaned data ready to be analyzed (saved in ../processed).
+    """ Gets job search metdata from joburls.csv, and 
+        gathers job metadata from each page. 
+
+        Note: Currently filtered to only look at 'data analyst' job searches.
     """
     logger = logging.getLogger(__name__)
     logger.info('Starting the job scraper...')
