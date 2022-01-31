@@ -176,14 +176,15 @@ class GlassdoorJobScraper:
             newrow["wagemax"] = self.__getTextAndCatch(driver, By.XPATH, '//*[@id="JDCol"]/div/article/div/div[2]/div[1]/div[2]/div/div[1]/div[1]/div[2]/div[3]/span[2]')
             return newrow
         except Exception as e:
-            logger.error("*** An unexpected error occurred on this job listing. Skipping it.")
-            logger.error("Error is:", e)
+            logger.error("******************** An unexpected error occurred on this job listing. Skipping it.")
+
 
     def scrapeAndSaveAllJobDataFromURL(self, row):
         """ From the row's URL, get job posting data for all result pages.
             - Opens the page from row (row["url"])
             - Gathers job posting data for each page in the results.
-            - Skips 
+            - Skips result pages when we already have data
+
         Args:
             row (Pandas DataFrame Row): The row for job search metdata.
         """
@@ -232,7 +233,8 @@ def main():
 
     gd = GlassdoorJobScraper()
     df = pd.read_csv("data/raw/joburls.csv")
-    df = df[df["job"]=='data analyst']
+    
+    df = df[(df["job"]=="data engineer") & (df["MetroID"]>=20)]
     for i, row in df.iterrows():
         gd.scrapeAndSaveAllJobDataFromURL(row)
 

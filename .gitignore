@@ -78,6 +78,10 @@ target/
 # exclude data from source control by default
 /data/
 
+# include certain files
+!data/raw/cities.csv
+!data/raw/joburls.csv
+
 # Mac OS-specific storage files
 .DS_Store
 

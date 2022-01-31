@@ -1,0 +1,346 @@
+<script type="text/javascript" src="https://cdn.jsdelivr.net/combine/npm/jquery@3.4.1,npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"></script>
+  
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css">
+
+<style id="compiled-css" type="text/css">
+	.butt, .butt:hover, .butt:focus {
+		border: none;
+		background-color: #ff7200;
+		color: #fff;
+		padding: 5px 10px;
+	}
+	
+	h1 {
+		padding-bottom: 10px;
+	}
+	
+	.funbox {
+		padding: 10px;
+		margin-bottom: 20px;
+		border: #3a3a3c;
+		background-color: #ccc;
+	}
+	
+	textarea {
+		width: 100%;
+		height: 100px;
+	}
+	
+	.tag {
+		padding: 5px;
+		color:#3a3a3c;
+		border-radius: 5px;
+		font-weight: bold;
+	}
+	
+	.tag.tag-prim {
+		background-color: #F05C22;
+		border: 1px solid #b8461a;
+	}
+	
+	.tag.tag-sec {
+		background-color: #D41647;
+		border: 1px solid #a8163c;
+	}
+	
+	.tag.app::after {
+		content: "\00a0\00a0 APP";
+		color: #fff;
+		font-size:0.6em;
+	}
+	.tag.fun::after {
+		content: "\00a0\00a0 FUN";
+		color: #fff;
+		font-size:0.6em;
+	}
+	.tag.sys::after {
+		content: "\00a0\00a0 SYS";
+		color: #fff;
+		font-size:0.6em;
+	}
+	.tag.ind::after {
+		content: "\00a0\00a0 IND";
+		color: #fff;
+		font-size:0.6em;
+	}
+	.tag.chem::after {
+		content: "\00a0\00a0 CHEM";
+		color: #fff;
+		font-size:0.6em;
+	}
+	
+	.tag.end::after {
+		content: "\00a0\00a0 EM";
+		color: #fff;
+		font-size:0.6em;
+	}
+	
+	.tag.val::after {
+		content: "\00a0\00a0 VAL";
+		color: #fff;
+		font-size:0.6em;
+	}
+	
+	.tag.com::after {
+		content: "\00a0\00a0 COM";
+		color: #fff;
+		font-size:0.6em;
+	}
+
+</style>
+  
+  
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Data Import!</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>Enter sentences separated by commas. Obviously, the sentence itself cannot contain commas. Example on load. <br><br><span class="text-danger">Warning!</span> Saving this will clear all the current training information.</p><br>
+              <textarea id="csv-data" style="height:500px;"></textarea>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button id="savedata" type="button" class="btn btn-danger" data-dismiss="model">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+  <br><br>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-3">
+        <div class="col-xs-3">
+		<h3>Load your data:</h3>
+		<button id="loadbutt" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Load Data</button>
+	    <br>
+	    <hr>
+        <h4>Last Tag:</h4>
+          Text: <span id="thetext"></span><br>
+          First: <span id="firstloc"></span><br>
+          Second: <span id="secondloc"></span><br>
+          NER: <span id="ner"></span>
+          <br>
+          <hr>
+          <h4>Training...</h4>
+          Training Set: <span id="setsize"></span><br>
+          Items Trained: <span id="trained"></span><br>
+          Completion: <span id="completion"></span><br>
+        </div>
+      </div>
+      <div class="col-sm-9">
+		<h2>
+			Currently Training:
+			</h2>
+		  <div class="row">
+			  <div class="col-sm-9">
+
+				  <div class="funbox">
+				  <span id="textinput">This is a cool sentence.</span>
+				  </div>
+			  </div>
+			  <div class="col-sm-3 text-right">
+				<button class="entity btn btn-secondary" title="Programming languages like c#, Python, R, Java, etc..">
+					Skill_ProgLang
+				</button><br><br>
+				<button class="entity btn btn-secondary" title="Mentioning SQL or NoSQL querying.">
+					Skill_SQL
+				</button><br><br>
+				<button class="entity btn btn-secondary" title="Mentioning math - calculus, probability, statistics, stats.">
+					Skill_Math
+				</button><br><br>
+				<button class="entity btn btn-secondary" title="Machine learning, statistical modeling, data modeling, deep learning, NLP, etc.">
+					Skill_ML
+				</button><br><br>
+				<button class="entity btn btn-secondary" title="Mentioning big data or large scale data.">
+					Skill_BigData
+				</button><br><br>
+				<button class="entity btn btn-secondary" title="AB testing, Multivariate testing, ABN testing, etc...">
+					Skill_ABTest
+				</button><br><br>
+				<button class="entity btn btn-secondary" title="DevOps or similar words.">
+					Skill_DevOps
+				</button><br><br>
+				<button class="entity btn btn-secondary" title="Application is the final product that the product is being used to make. For example, a particular adhesion promoter might be used in *carpet backing*.">
+					Skill_MLOps
+				</button><br><br>
+				<button class="entity btn btn-secondary" title="Application is the final product that the product is being used to make. For example, a particular adhesion promoter might be used in *carpet backing*.">
+					Skill_Other
+				</button><br><br>
+				<button class="entity btn btn-secondary" title="This is what the chemistry or product does for the formulation. For example - it is a *high-temp* lubricant or an *adhesion promoter* for a coating.">
+					Tool_BI
+				</button><br><br>
+				<button class="entity btn btn-secondary" title="This is what the chemistry or product does for the formulation. For example - it is a *high-temp* lubricant or an *adhesion promoter* for a coating.">
+					Tool_Cloud
+				</button><br><br>
+				<button class="entity btn btn-secondary" title="This is what the chemistry or product does for the formulation. For example - it is a *high-temp* lubricant or an *adhesion promoter* for a coating.">
+					Tool_DB
+				</button><br><br>
+				<button class="entity btn btn-secondary" title="This is what the chemistry or product does for the formulation. For example - it is a *high-temp* lubricant or an *adhesion promoter* for a coating.">
+					Tool_DevOps
+				</button><br><br>
+				<button class="entity btn btn-dark" title="Any actual Job Title listed in the job description - like previous positions or reporting to.">
+					JobTitle
+				</button><br><br>
+				<button class="entity btn btn-dark" title="This is what the customer cares about to make the sale. It could be *price*, *fast delivery*, * or *low MOQ*.">
+					YearsExperience
+				</button><br><br>
+				<button class="entity btn btn-dark" title="A competitive product is a related chemistry or product name that the customer may be considering for their need. It could be a product we carry or not.">
+					Seniority
+				</button><br><br>
+				<button class="entity btn btn-dark" title="A competitive product is a related chemistry or product name that the customer may be considering for their need. It could be a product we carry or not.">
+					Degree
+				</button><br><br>
+				<button id="action-next" class="btn btn-success" style="float:right;" title="This will save the current item and move you to the next sentence.">
+					Next 🠞
+					</button><br><br>
+				 <button id="action-reset" class="btn btn-danger" style="float:right;" title="This will reset this training item back to default.">
+				  Reset ↻
+				  </button>
+				  <br><br>
+			  </div>
+		  </div>
+       
+        
+        <div class="row">
+			<div class="col-xs-12">
+				<h2>
+					Preview:
+				</h2>
+				  <br>
+				  <div class="funbox" style="padding-top:20px; padding-bottom:20px;">
+					<span id="trainedtext">This is a cool sentence.</span>
+				  </div>
+				  <br>
+				  <hr>
+				  <br>
+				  Ready to finish and save the JSON file?<br><br>
+				  <button id="donebutton" class="btn btn-success">
+				  I'm Finished
+				  </button> 
+				  <br><br>
+				  <textarea id="output"></textarea>
+			</div>
+		</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- TODO: Missing CoffeeScript 2 -->
+
+<script type="text/javascript">
+
+var ind_train = 0;
+
+var trainingstrings = ["This sentence is cool.", "This sentence is carpet backing.", "This sentence is hardened steel.", "This sentence is rotomolding.", "This sentence is pesticides.","This sentence is speciality polymers.","This sentence is electronic chemicals.","This sentence is surfactants.","This sentence is construction chemicals.","This sentence is Industrial Cleaners.","This sentence is flavors and fragrances.","This sentence is speciality coatings.","This sentence is printing inks.","This sentence is water-soluble polymers.","This sentence is food additives.","This sentence is paper chemicals.","This sentence is oil field chemicals.","This sentence is plastic adhesives.","This sentence is adhesives and sealants.","This sentence is cosmetic chemicals.","This sentence is water management chemicals.","This sentence is catalysts.","This sentence is textile chemicals."]
+
+window.onload=function(){
+		
+	var training = [];
+	var entities = [];
+	var currentstatement = trainingstrings[ind_train];
+	$("#csv-data").val(trainingstrings.join(","));
+	$("#setsize").html(trainingstrings.length);
+	$("#textinput").html(currentstatement);
+	$("#trainedtext").html(currentstatement);
+
+	function getSelectionText() {
+		var text = "";
+		if (window.getSelection) {
+			text = window.getSelection().toString();
+		} else if (document.selection && document.selection.type != "Control") {
+			text = document.selection.createRange().text;
+		}
+		return text;
+	}
+
+	$('.entity').click(function (event) {
+		if(getSelectionText() != "" && $("#textinput").text().indexOf(getSelectionText()) >= 0) {
+			event.preventDefault();
+			var thetext = getSelectionText().replace(/(\r\n|\n|\r|\t)/gm, "").trim();
+			var firstloc = $("#textinput").text().indexOf(thetext);
+			var secondloc = firstloc + thetext.length;
+			var tagval = $(this).text().replace(/(\r\n|\n|\r|\t)/gm, "").trim();
+
+			// Fill left menu stuff...
+			$("#thetext").html(thetext);
+			$("#firstloc").html(firstloc);
+			$("#secondloc").html(secondloc);
+			$("#ner").html(tagval);
+
+			var entity = {    
+				value: thetext,
+				first: firstloc,
+				second: secondloc,
+				tag: tagval};
+
+			entities.push(entity);
+			
+			var trainval = "";
+			if($(this).hasClass("btn-dark")){
+				trainval = "<span class=\"tag tag-sec " + tagval.toLowerCase().substring(0,3) + "\">" + thetext + "</span>";
+			}
+			else {
+				trainval = "<span class=\"tag tag-prim " + tagval.toLowerCase().substring(0,3) + "\">" + thetext + "</span>";
+			}
+			$("#trainedtext").html($("#trainedtext").html().replace(thetext,trainval));
+		}
+	});
+
+	$("#donebutton").click(function(event) {
+		$("#output").val(JSON.stringify(training));
+	});
+
+	// NextButton
+	$('#action-next').click(function (event) {
+		event.preventDefault();
+		if(training.length < trainingstrings.length) {
+			
+			// Add data to list
+			training.push({
+					statement: currentstatement,
+					entities
+				}
+			);
+			
+			$("#trained").html(training.length);
+			$("#completion").html(parseFloat((training.length/trainingstrings.length)*100).toFixed(2) + "%");
+
+			// Reset the form and go to the next sentence.
+			ind_train++;
+			entities = [];
+			currentstatement = trainingstrings[ind_train];
+			$("#textinput").html(currentstatement);
+			$("#trainedtext").html(currentstatement);
+		}
+	});
+
+	// Reset Button
+	$('#action-reset').click(function (event) {
+		event.preventDefault();
+		// reset entities trained, and reset trained text html
+		entities = [];
+		$("#trainedtext").html(currentstatement);
+	});
+
+	$("#savedata").click(function (event) {
+		trainingstrings = $("#csv-data").val().replace("\"","").split(",");
+		training = [];
+		entities = [];
+		ind_train = 0;
+		currentstatement = trainingstrings[ind_train];
+		$("#setsize").html(trainingstrings.length);
+		$("#textinput").html(currentstatement);
+		$("#trainedtext").html(currentstatement);
+		$('#exampleModal').modal('hide')
+	});
+	
+	
+}
+
+</script>
